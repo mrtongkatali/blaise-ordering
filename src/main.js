@@ -7,6 +7,7 @@ import Vuetify from 'vuetify'
 import 'babel-polyfill'
 
 import 'vuetify/dist/vuetify.min.css'
+import 'npm/mdi/scss/materialdesignicons.scss'
 
 Vue.use(Vuetify)
 Vue.config.productionTip = false
