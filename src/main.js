@@ -8,9 +8,10 @@ import axios from 'axios'
 import Vuetify from 'vuetify'
 import 'babel-polyfill'
 
+import { EventBus } from '@/utils/event-bus'
+
 import 'vuetify/dist/vuetify.min.css'
 import 'npm/mdi/scss/materialdesignicons.scss'
-
 import '@/assets/main.styl'
 
 Vue.use(Vuetify)
@@ -30,6 +31,38 @@ http.interceptors.request.use(config => {
 })
 
 Vue.http = Vue.axios = http
+
+/* eslint-disable no-useless-escape */
+let globalMixins = {
+  methods: {
+    inputRules () {
+      return {
+        required: (value) => !!value || 'This is a required field',
+        email: (value) => {
+          const pattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid Email'
+        },
+        phoneNumber: (value) => {
+          const pattern = /^[0-9]+$/
+          return pattern.test(value) || 'Invalid mobile number'
+        }
+      }
+    },
+
+    displayToast (text, mode = 'info') {
+      EventBus.$emit('display-toast', {text, mode})
+    },
+
+    parseErrorRes (errRes) {
+      let res = errRes.response
+      if (!res) return
+
+      return res.data.error || 'An error occured. Please try again.'
+    }
+  }
+}
+
+Vue.mixin(globalMixins)
 
 /* eslint-disable no-new */
 new Vue({

@@ -11,7 +11,7 @@ export default new Vuex.Store({
     Authentication
   },
   plugins: [createPersistedState({
-    key: '_kit_',
+    key: '_bst_',
     paths: [
       'Authentication'
     ]

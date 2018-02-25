@@ -5,22 +5,31 @@ import store from '@/store'
 export default {
   login: (email, password) => {
     return new Promise((resolve, reject) => {
-      let hash = crypto.SHA256(password)
       let payload = {
         email: email,
-        password: hash.toString(crypto.enc.Hex)
+        password: password
       }
-      Vue.http.post(`userservice/login`, payload).then((loginResponse) => {
-        if (loginResponse && loginResponse.data && loginResponse.data.userType) {
-          // We have data
-          let token = loginResponse.headers.token
-          let user = loginResponse.data
+
+      Vue.http.post(`api/user/login`, payload).then((res) => {
+        if (res && res.data && res.data.user && res.data.token) {
+          let token = res.data.token
+          let user = res.data.user
+
           store.dispatch('setCredentials', {user, token})
-          store.dispatch('resetDatatableFilters')
-          resolve(loginResponse.data)
+          resolve(res.data)
         } else {
-          reject('no_data')
+          reject('Invalid user')
         }
+        // if (loginResponse && loginResponse.data && loginResponse.data.userType) {
+        //   // We have data
+        //   let token = loginResponse.headers.token
+        //   let user = loginResponse.data
+        //   store.dispatch('setCredentials', {user, token})
+        //   store.dispatch('resetDatatableFilters')
+        //   resolve(loginResponse.data)
+        // } else {
+        //   reject('no_data')
+        // }
       }).catch((loginErr) => {
         store.dispatch('clearUser')
         reject(loginErr)

@@ -9,7 +9,8 @@ const getters = {
 }
 
 const actions = {
-  setCredentials: ({ commit, state }, obj) => commit('setCredentials', obj)
+  setCredentials: ({ commit, state }, obj) => commit('setCredentials', obj),
+  clearUser: ({ commit, state }) => commit('clearUser')
 }
 
 const mutations = {
