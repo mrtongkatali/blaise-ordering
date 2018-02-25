@@ -4,11 +4,7 @@
     v-toolbar.white
       img(src="/static/images/logo.png", height="64px", width="128px")
       v-spacer
-      v-toolbar-items.hidden-sm-and-down
-        v-btn(flat='').black--text Home
-        v-btn(flat='').black--text Products
-        v-btn(flat='').black--text Login
-        v-btn(flat='').black--text Register
+      public-navigation
 
     v-content
       section
@@ -116,6 +112,10 @@ export default {
     return {
       title: 'Your Logo'
     }
+  },
+
+  components: {
+    publicNavigation: () => import('@/components/public-navigation')
   }
 }
 </script>

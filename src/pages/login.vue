@@ -15,6 +15,10 @@ export default {
   name: 'HelloWorld',
   data () {
     return {}
+  },
+
+  components: {
+    publicNavigation: () => import('@/components/public-navigation')
   }
 }
 </script>

@@ -12,9 +12,9 @@ export default new Router({
       component: () => import('@/pages/public/landing')
     },
     {
-      path: '/hello',
-      name: 'hello',
-      component: () => import('@/components/hello-world')
+      path: '/login',
+      name: 'login',
+      component: () => import('@/pages/public/login')
     }
   ]
 })
