@@ -21,10 +21,11 @@
                         prepend-icon="email",
                         v-model="input.email",
                         label="Email Address",
-                        :rules="[inputRules()['required']]",
+                        :rules="[inputRules()['required'], inputRules()['email']]",
                         @keyup.enter.native="login",
                         required
                       )
+
                     v-flex(xs12)
                       v-text-field(
                         light,
@@ -36,9 +37,10 @@
                         @keyup.enter.native="login",
                         required
                       )
-              v-card-actions
+              v-card-actions.display-flex.justify-end
                 v-btn(
                   flat,
+                  large,
                   color="primary",
                   @click.native.stop="login",
                   :loading="loading.login"
