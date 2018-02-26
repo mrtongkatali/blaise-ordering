@@ -61,6 +61,17 @@
                         @keyup.enter.native="registerClient",
                         required
                       )
+                    v-flex(xs12)
+                      v-text-field(
+                        light,
+                        single-line,
+                        prepend-icon="mdi-email",
+                        v-model="input.email",
+                        label="Email Address",
+                        :rules="[inputRules()['email']]",
+                        @keyup.enter.native="registerClient",
+                        required
+                      )
 
                   h3.subheading.mt-3.mb-1 #[strong() Location]
                   v-layout(row, wrap)
@@ -126,10 +137,32 @@
                       v-text-field(
                         light,
                         single-line,
+                        prepend-icon="mdi-briefcase",
+                        v-model="input.lineBusiness",
+                        label="Line of Business",
+                        :rules="[inputRules()['required']]",
+                        @keyup.enter.native="registerClient",
+                        required
+                      )
+                    v-flex(xs12)
+                      v-text-field(
+                        light,
+                        single-line,
                         prepend-icon="mdi-domain",
                         v-model="input.companyName",
                         label="Company Name",
                         :rules="[inputRules()['required']]",
+                        @keyup.enter.native="registerClient",
+                        required
+                      )
+                    v-flex(xs12)
+                      v-text-field(
+                        light,
+                        single-line,
+                        prepend-icon="mdi-email",
+                        v-model="input.companyEmail",
+                        label="Company Email",
+                        :rules="[inputRules()['email']]",
                         @keyup.enter.native="registerClient",
                         required
                       )
@@ -210,18 +243,18 @@
                   large,
                   color="primary",
                   @click.native.stop="registerClient",
-                  :loading="loading.login"
+                  :loading="loading.registration"
                 ) Create Account
 </template>
 
 <script>
 import { UserService } from '@/api'
-
+import { merge } from 'lodash/object'
 export default {
   name: 'login',
   data () {
     return {
-      verifyPassword: null,
+      verifyPassword: '123123',
       customRules () {
         return {
           samePassword: (value) => {
@@ -230,23 +263,24 @@ export default {
         }
       },
       input: {
-        firstname: null,
-        lastname: null,
-        middlename: null,
-        address: null,
-        city: null,
-        zipCode: null,
-        mobileNo: null,
-        phoneNo: null,
-        email: null,
-        password: null,
-        companyName: null,
+        firstname: '123123',
+        lastname: '123123',
+        middlename: '123123',
+        address: '123123',
+        city: '123123',
+        zipCode: '123123',
+        mobileNo: '123123',
+        phoneNo: '123123',
+        email: 'testing2@test.com',
+        password: '123123',
+        companyName: '123123',
         companyCountry: 'PH',
-        lineBusiness: null,
-        companyAddress: null,
-        companyCity: null,
-        companyZipCode: null,
-        companyLandline: null
+        lineBusiness: '123123',
+        companyEmail: 'testing2@test.com',
+        companyAddress: '123123',
+        companyCity: '123123',
+        companyZipCode: '123123',
+        companyLandLine: '123123'
       },
       country: {
         list: [{code: 'PH', text: 'Philippines'}],
@@ -257,19 +291,30 @@ export default {
         selected: 'PRIVATE'
       },
       loading: {
-        login: false
+        registration: false
       }
     }
   },
 
   methods: {
-    registerClient () {
-      this.loading.login = false
+    async registerClient () {
+      this.loading.registration = true
       if (!this.$refs.registrationForm.validate()) return
 
       try {
-        console.log(`this.input`, this.input)
+        let payload = merge(this.input, {
+          designation: this.designation.selected,
+          userType: 'CLIENT',
+          country: this.country.selected,
+          confirm_password: this.verifyPassword
+        })
+        console.log(`this.input`, payload)
+
+        await UserService.register(payload)
+        this.displayToast('Successfully registered!')
+        this.loading.registration = false
       } catch (e) {
+        this.loading.registration = false
         this.displayToast(this.parseErrorRes(e) || 'An error occured. Please try again', 'error')
       }
     },

@@ -20,16 +20,6 @@ export default {
         } else {
           reject('Invalid user')
         }
-        // if (loginResponse && loginResponse.data && loginResponse.data.userType) {
-        //   // We have data
-        //   let token = loginResponse.headers.token
-        //   let user = loginResponse.data
-        //   store.dispatch('setCredentials', {user, token})
-        //   store.dispatch('resetDatatableFilters')
-        //   resolve(loginResponse.data)
-        // } else {
-        //   reject('no_data')
-        // }
       }).catch((loginErr) => {
         store.dispatch('clearUser')
         reject(loginErr)
@@ -46,6 +36,17 @@ export default {
       Vue.http.get(`userservice/me`).then((meResponse) => {
         store.dispatch('setCredentials', {user: meResponse.data})
         resolve(meResponse.data)
+      }).catch((meErr) => {
+        store.dispatch('clearUser')
+        reject(meErr)
+      })
+    })
+  },
+
+  register: (payload) => {
+    return new Promise((resolve, reject) => {
+      Vue.http.post(`api/user/register`, payload).then((res) => {
+        resolve(res.data)
       }).catch((meErr) => {
         store.dispatch('clearUser')
         reject(meErr)

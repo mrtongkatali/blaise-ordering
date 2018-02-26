@@ -57,6 +57,8 @@ let globalMixins = {
       let res = errRes.response
       if (!res) return
 
+      console.log(`err`, res)
+
       return res.data.error || 'An error occured. Please try again.'
     }
   }
