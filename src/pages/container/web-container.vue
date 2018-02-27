@@ -14,13 +14,13 @@
               v-list-tile-content
                 v-list-tile-title
                   | {{ item.text }}
-            v-list-tile(v-for="(child, i) in item.children", :key="i", @click="")
+            v-list-tile(v-for="(child, i) in item.children", :key="i", @click="$router.push({name: child.routeName})")
               v-list-tile-action(v-if="child.icon")
                 v-icon {{ child.icon }}
               v-list-tile-content
                 v-list-tile-title
                   | {{ child.text }}
-          v-list-tile(v-else, @click="", :key="item.text")
+          v-list-tile(v-else, @click="$router.push({name: item.routeName})", :key="item.text")
             v-list-tile-action
               v-icon {{ item.icon }}
             v-list-tile-content
@@ -30,11 +30,13 @@
       v-toolbar-title.ml-0.pl-3(style="width: 300px")
         v-toolbar-side-icon(@click.stop="drawer = !drawer")
         span.hidden-sm-and-down Blaise Ordering v0.1
+      span.title(v-if="$route && $route.meta") {{ $route.meta.title }}
       v-spacer
-      v-btn(icon)
-        v-icon apps
-      v-btn(icon)
-        v-icon notifications
+      //- v-btn(icon)
+      //-   v-icon apps
+      //- v-btn(icon)
+      //-   v-icon notifications
+      span(v-if="getUser") Howdy, {{ getUser.firstname }}
       v-btn(icon, large)
         v-avatar(size="32px", tile)
           img(src="https://scontent.fmnl4-3.fna.fbcdn.net/v/t1.0-9/24909985_10208150294635202_1303972830500063392_n.jpg?_nc_eui2=v1%3AAeFfuP3rF2bs2FHuVS2hbZwtbVYOSmVWzQ9XyMNrJ0X39GYKWWH3uLnCrq5ITPKKuIF_DgXdOKgSValmpOJHwXQM07xPuhuoYfP5b9P_fgkiJg&oh=74f4db153b4c57da4f56fddfdf48ec99&oe=5B059F9A")
@@ -44,61 +46,21 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import utils from '@/utils'
 export default {
   name: 'web-container',
   data () {
     return {
       drawer: null,
-      items: [
-        { icon: 'mdi-view-dashboard', text: 'Dashboard' },
-        { icon: 'mdi-account-multiple-outline', text: 'Client Management' },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Product Management',
-          model: false,
-          children: [
-            { icon: 'mdi-download-network', text: 'Supplier' },
-            { icon: 'mdi-shape', text: 'Category' },
-            { icon: 'mdi-water-pump', text: 'Products' }
-          ]
-        },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Quotations',
-          model: false,
-          children: [
-            { icon: 'mdi-shape', text: 'Pending' },
-            { icon: 'mdi-view-list', text: 'Quotation List' }
-          ]
-        },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Reports',
-          model: false,
-          children: [
-            { icon: 'mdi-file-chart', text: 'Sales' },
-            { icon: 'mdi-chart-timeline', text: 'Delivery Receipt' }
-          ]
-        },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'User Management',
-          model: false,
-          children: [
-            { icon: 'mdi-account-plus', text: 'Users' },
-            { icon: 'mdi-verified', text: 'User Roles' }
-          ]
-        },
-        { icon: 'settings', text: 'Settings' },
-        { icon: 'mdi-logout', text: 'Logout' }
-      ]
+      items: utils.menuItems
     }
   },
 
-  components: {}
+  computed: {
+    ...mapGetters([
+      'getUser'
+    ])
+  }
 }
 </script>

@@ -72,7 +72,7 @@ export default {
       try {
         this.loading.login = true
         await UserService.login(this.input.email, this.input.password)
-
+        this.$router.push({name: 'dashboard'})
         this.loading.login = false
       } catch (e) {
         console.log(`[ERROR]`, e)

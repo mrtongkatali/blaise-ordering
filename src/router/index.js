@@ -1,15 +1,44 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { EventBus } from '@/utils/event-bus'
 import { UserService } from '@/api'
+import { indexOf } from 'lodash/array'
+// import { endsWith } from 'lodash/string'
 
 Vue.use(Router)
 /* eslint-disable handle-callback-err */
+
 let requiresAuth = (to, from, next) => {
-  UserService.me().then((res) => {
-    console.log(`[debug] authentication successfull`)
-  }).catch((err) => {
-    console.log(`[debug] authentication successfull`)
-  })
+  if (to && to.meta && to.meta.public) {
+    // its a public section
+    next()
+  } else {
+    UserService.me().then((res) => {
+      if (to && to.meta && to.meta.auth && to.meta.auth.length > 0) {
+        if (indexOf(to.meta.auth, res.userType) !== -1) {
+          next()
+        } else {
+          EventBus.$emit('display-toast', {text: 'Permission Denied. You can\'t access the page.', mode: 'error'})
+          next(false)
+        }
+      } else { next() }
+    }).catch((error) => {
+      // if (error && error.response && error.response.status) {
+      //   if (error.response.status === 503) {
+      //     // server not available
+      //   } else if (error.response.status === 401 || error.response.status === 500 || (error.response.status === 404 && endsWith(error.config.url, 'userservice/me'))) {
+      //     EventBus.displayToast(`Invalid authentication. Please login again.`)
+      //   }
+      // } else {
+      //   EventBus.displayToast(`Oops. Something went wrong. Please try again.`)
+      // }
+
+      EventBus.$emit('display-toast', {text: 'Authentication Failed. Please login again.', mode: 'error'})
+      UserService.logout()
+      next({name: 'landing'})
+    })
+  }
+
   next()
 }
 
@@ -19,16 +48,25 @@ export default new Router({
     {
       path: '/',
       name: 'landing',
+      meta: {public: true},
       component: () => import('@/pages/public/landing')
     },
     {
       path: '/login',
       name: 'login',
+      meta: {public: true},
       component: () => import('@/pages/public/login')
+    },
+    {
+      path: '/logout',
+      name: 'logout',
+      meta: {public: true},
+      component: () => import('@/pages/public/logout')
     },
     {
       path: '/registration',
       name: 'registration',
+      meta: {public: true},
       component: () => import('@/pages/public/registration')
     },
     {
@@ -39,7 +77,15 @@ export default new Router({
         {
           path: 'dashboard',
           name: 'dashboard',
+          meta: {auth: true, title: 'Dashboard'},
           component: () => import('@/pages/web/dashboard'),
+          beforeEnter: requiresAuth
+        },
+        {
+          path: '/product/category',
+          name: 'product-category',
+          meta: {auth: ['ADMIN'], title: 'Product Category'},
+          component: () => import('@/pages/web/product-category'),
           beforeEnter: requiresAuth
         }
       ]
