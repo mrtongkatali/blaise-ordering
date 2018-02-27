@@ -33,9 +33,10 @@ export default {
 
   me: () => {
     return new Promise((resolve, reject) => {
-      Vue.http.get(`userservice/me`).then((meResponse) => {
-        store.dispatch('setCredentials', {user: meResponse.data})
-        resolve(meResponse.data)
+      Vue.http.get(`api/getUserLogin`).then((res) => {
+        console.log(`me res`, res)
+        // store.dispatch('setCredentials', {user: meResponse.data})
+        // resolve(meResponse.data)
       }).catch((meErr) => {
         store.dispatch('clearUser')
         reject(meErr)

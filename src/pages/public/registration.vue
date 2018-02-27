@@ -254,7 +254,7 @@ export default {
   name: 'login',
   data () {
     return {
-      verifyPassword: '123123',
+      verifyPassword: null,
       customRules () {
         return {
           samePassword: (value) => {
@@ -263,25 +263,45 @@ export default {
         }
       },
       input: {
-        firstname: '123123',
-        lastname: '123123',
-        middlename: '123123',
-        address: '123123',
-        city: '123123',
-        zipCode: '123123',
-        mobileNo: '123123',
-        phoneNo: '123123',
-        email: 'testing2@test.com',
-        password: '123123',
-        companyName: '123123',
+        firstname: null,
+        lastname: null,
+        middlename: null,
+        address: null,
+        city: null,
+        zipCode: null,
+        mobileNo: null,
+        phoneNo: null,
+        email: null,
+        password: null,
+        companyName: null,
         companyCountry: 'PH',
-        lineBusiness: '123123',
-        companyEmail: 'testing2@test.com',
-        companyAddress: '123123',
-        companyCity: '123123',
-        companyZipCode: '123123',
-        companyLandLine: '123123'
+        lineBusiness: null,
+        companyEmail: null,
+        companyAddress: null,
+        companyCity: null,
+        companyZipCode: null,
+        companyLandLine: null
       },
+      // input: {
+      //   firstname: '123123',
+      //   lastname: '123123',
+      //   middlename: '123123',
+      //   address: '123123',
+      //   city: '123123',
+      //   zipCode: '123123',
+      //   mobileNo: '123123',
+      //   phoneNo: '123123',
+      //   email: 'testing2@test.com',
+      //   password: '123123',
+      //   companyName: '123123',
+      //   companyCountry: 'PH',
+      //   lineBusiness: '123123',
+      //   companyEmail: 'testing2@test.com',
+      //   companyAddress: '123123',
+      //   companyCity: '123123',
+      //   companyZipCode: '123123',
+      //   companyLandLine: '123123'
+      // },
       country: {
         list: [{code: 'PH', text: 'Philippines'}],
         selected: 'PH'
@@ -298,9 +318,12 @@ export default {
 
   methods: {
     async registerClient () {
-      this.loading.registration = true
-      if (!this.$refs.registrationForm.validate()) return
+      if (!this.$refs.registrationForm.validate()) {
+        this.displayToast('Please fill-up all the required fields.', 'error')
+        return
+      }
 
+      this.loading.registration = true
       try {
         let payload = merge(this.input, {
           designation: this.designation.selected,

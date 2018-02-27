@@ -9,6 +9,7 @@ import Vuetify from 'vuetify'
 import 'babel-polyfill'
 
 import { EventBus } from '@/utils/event-bus'
+import { mapKeys } from 'lodash/object'
 
 import 'vuetify/dist/vuetify.min.css'
 import 'npm/mdi/scss/materialdesignicons.scss'
@@ -55,11 +56,19 @@ let globalMixins = {
 
     parseErrorRes (errRes) {
       let res = errRes.response
+      let errors = []
+
       if (!res) return
 
-      console.log(`err`, res)
+      if (res.data && res.data.errors && res.data.errors) {
+        mapKeys(res.data.errors, (value, key) => {
+          errors.push(value)
+        })
 
-      return res.data.error || 'An error occured. Please try again.'
+        return errors.join(`\n\n`)
+      } else {
+        return res.data.error || 'An error occured. Please try again.'
+      }
     }
   }
 }
