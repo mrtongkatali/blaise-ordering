@@ -50,6 +50,10 @@ let globalMixins = {
       }
     },
 
+    timeformat () {
+      return 'DD-MMM-YY hh:mm a'
+    },
+
     displayToast (text, mode = 'info') {
       EventBus.$emit('display-toast', {text, mode})
     },
