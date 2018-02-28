@@ -82,6 +82,13 @@ export default new Router({
           beforeEnter: requiresAuth
         },
         {
+          path: '/products',
+          name: 'products',
+          meta: {auth: ['ADMIN'], title: 'Products'},
+          component: () => import('@/pages/web/products'),
+          beforeEnter: requiresAuth
+        },
+        {
           path: '/product/supplier',
           name: 'product-supplier',
           meta: {auth: ['ADMIN'], title: 'Product Supplier'},
