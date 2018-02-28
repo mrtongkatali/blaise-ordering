@@ -34,7 +34,6 @@ v-layout(row, wrap)
                 v-model="input.categoryName",
                 label="Category Name",
                 :rules="[inputRules()['required']]",
-                @keyup.enter.native="createCategory",
                 required
               )
             v-flex(xs12)
@@ -43,8 +42,7 @@ v-layout(row, wrap)
               textarea,
               required,
               v-model="input.categoryDescription",
-              label="Description",
-              @keyup.enter.native="createCategory"
+              label="Description"
             )
         v-card-actions.display-flex.justify-end
           v-btn(color="red", flat, @click.stop="categoryDialog.show = false", :disabled="loading.create") Close
@@ -104,7 +102,11 @@ export default {
 
   methods: {
     async updateCategory (categoryId) {
+      this.loading.create = false
+      if (!this.$refs.createCategoryForm.validate()) return
+
       try {
+        this.loading.create = true
         await ProductService.updateCategory({
           catId: categoryId,
           name: this.input.categoryName,
@@ -115,8 +117,9 @@ export default {
         this.loadCategoryList()
         this.cancelModal()
         this.$refs.createCategoryForm.reset()
+        this.loading.create = false
       } catch (e) {
-        console.log(`e`, e)
+        this.loading.create = false
         this.displayToast(this.parseErrorRes(e) || 'An error occured when trying to update category. Please try again', 'error')
       }
     },
@@ -144,7 +147,7 @@ export default {
           status: 'inactive'
         })
 
-        this.displayToast(`Successfully deleted Category #${category.id}`)
+        this.displayToast(`Successfully deleted Category - ${category.name}`)
         this.loadCategoryList()
       } catch (e) {
         console.log(`e`, e)

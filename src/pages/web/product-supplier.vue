@@ -19,7 +19,7 @@ v-layout(row, wrap)
           td.text-xs-left {{ props.item.status }}
           td.text-xs-left {{ dateFormat(props.item.created_at) }}
           td.text-xs-left
-            v-btn( light, small, color="red", @click.native.stop="deleteCategory(props.item)").white--text Delete
+            v-btn( light, small, color="red", @click.native.stop="deleteSupplier(props.item)").white--text Delete
 
   v-dialog(v-model="supplierDialog.show", max-width="500px", persistent)
     v-form(ref="createSupplierForm")
@@ -34,8 +34,7 @@ v-layout(row, wrap)
                 prepend-icon="mdi-shape",
                 v-model="input.name",
                 label="Supplier Name",
-                :rules="[inputRules()['required']]",
-                @keyup.enter.native="createSupplier",
+                :rules="[inputRules()['required']]"
                 required
               )
             v-flex(xs12)
@@ -46,8 +45,7 @@ v-layout(row, wrap)
                 prepend-icon="mdi-map-marker",
                 v-model="input.address",
                 label="Address",
-                :rules="[inputRules()['required']]",
-                @keyup.enter.native="createSupplier"
+                :rules="[inputRules()['required']]"
               )
             v-flex(xs12)
               v-text-field(
@@ -57,8 +55,7 @@ v-layout(row, wrap)
                 prepend-icon="mdi-currency-usd",
                 v-model="input.currency",
                 label="Currency",
-                :rules="[inputRules()['required']]",
-                @keyup.enter.native="createSupplier"
+                :rules="[inputRules()['required']]"
               )
         v-card-actions.display-flex.justify-end
           v-btn(color="red", flat, @click.stop="cancelModal", :disabled="loading.create") Close
@@ -120,7 +117,11 @@ export default {
 
   methods: {
     async updateSupplier (supplierId) {
+      this.loading.create = false
+      if (!this.$refs.createSupplierForm.validate()) return
+
       try {
+        this.loading.create = true
         await ProductService.updateSupplier({
           supplierId: supplierId,
           name: this.input.name,
@@ -128,12 +129,13 @@ export default {
           currency: this.input.currency
         })
 
-        this.displayToast(`Category has been updated`)
+        this.displayToast(`Supplier has been updated`)
         this.loadSupplierList()
         this.cancelModal()
         this.$refs.createSupplierForm.reset()
+        this.loading.create = false
       } catch (e) {
-        console.log(`e`, e)
+        this.loading.create = false
         this.displayToast(this.parseErrorRes(e) || 'An error occured when trying to update supplier. Please try again', 'error')
       }
     },
@@ -153,16 +155,17 @@ export default {
       return (datetime ? moment(datetime).format(this.timeformat()) : '')
     },
 
-    async deleteCategory (supplier) {
+    async deleteSupplier (supplier) {
       try {
         await ProductService.updateSupplier({
-          catId: supplier.id,
+          supplierId: supplier.id,
           name: supplier.name,
           address: supplier.address,
+          currency: supplier.currency,
           status: 'inactive'
         })
 
-        this.displayToast(`Successfully deleted Category #${supplier.id}`)
+        this.displayToast(`Successfully deleted Supplier - ${supplier.name}`)
         this.loadSupplierList()
       } catch (e) {
         console.log(`e`, e)
