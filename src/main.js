@@ -6,6 +6,7 @@ import router from '@/router'
 import store from './store'
 import axios from 'axios'
 import Vuetify from 'vuetify'
+import Carousel3d from 'vue-carousel-3d'
 import 'babel-polyfill'
 
 import { EventBus } from '@/utils/event-bus'
@@ -17,6 +18,7 @@ import '@/assets/main.styl'
 
 Vue.use(Vuetify)
 Vue.use(store)
+Vue.use(Carousel3d)
 Vue.config.productionTip = false
 
 let http = axios.create({

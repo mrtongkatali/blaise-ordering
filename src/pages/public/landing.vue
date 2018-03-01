@@ -22,39 +22,52 @@
               h2.headline The best way to start developing
               span.subheading
                 | Cras facilisis mi vitae nunc
-          v-flex(xs12)
-            v-container(grid-list-xl)
-              v-layout(row, wrap, align-center)
-                v-flex(xs12, md4)
-                  v-card.elevation-0.transparent
-                    v-card-text.text-xs-center
-                      v-icon.blue--text.text--lighten-2(x-large) color_lens
-                    v-card-title.layout.justify-center(primary-title)
-                      .headline.text-xs-center Content 1
-                    v-card-text
-                      | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
-                      | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-                      | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
-                v-flex(xs12, md4)
-                  v-card.elevation-0.transparent
-                    v-card-text.text-xs-center
-                      v-icon.blue--text.text--lighten-2(x-large) flash_on
-                    v-card-title.layout.justify-center(primary-title)
-                      .headline Content 2
-                    v-card-text
-                      | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
-                      | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-                      | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
-                v-flex(xs12, md4)
-                  v-card.elevation-0.transparent
-                    v-card-text.text-xs-center
-                      v-icon.blue--text.text--lighten-2(x-large) build
-                    v-card-title.layout.justify-center(primary-title)
-                      .headline.text-xs-center Content 3
-                    v-card-text
-                      | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
-                      | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
-                      | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
+        carousel-3d(:autoplay="true", :autoplay-timeout="3500", :controls-visible="true")
+          slide(v-for="(slide, idx) in items", :index="idx", :key="idx")
+            figure
+              img(:src="slide.src")
+              figcaption
+                h3.subheading {{ slide.text }}
+                small {{ slide.description }}
+
+          //- v-flex.my-3(xs12, sm4)
+          //-   .text-xs-center
+          //-     h2.headline The best way to start developing
+          //-     span.subheading
+          //-       | Cras facilisis mi vitae nunc
+          //- v-flex(xs12)
+          //-   v-container(grid-list-xl)
+          //-     v-layout(row, wrap, align-center)
+          //-       v-flex(xs12, md4)
+          //-         v-card.elevation-0.transparent
+          //-           v-card-text.text-xs-center
+          //-             v-icon.blue--text.text--lighten-2(x-large) color_lens
+          //-           v-card-title.layout.justify-center(primary-title)
+          //-             .headline.text-xs-center Content 1
+          //-           v-card-text
+          //-             | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
+          //-             | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+          //-             | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
+          //-       v-flex(xs12, md4)
+          //-         v-card.elevation-0.transparent
+          //-           v-card-text.text-xs-center
+          //-             v-icon.blue--text.text--lighten-2(x-large) flash_on
+          //-           v-card-title.layout.justify-center(primary-title)
+          //-             .headline Content 2
+          //-           v-card-text
+          //-             | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
+          //-             | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+          //-             | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
+          //-       v-flex(xs12, md4)
+          //-         v-card.elevation-0.transparent
+          //-           v-card-text.text-xs-center
+          //-             v-icon.blue--text.text--lighten-2(x-large) build
+          //-           v-card-title.layout.justify-center(primary-title)
+          //-             .headline.text-xs-center Content 3
+          //-           v-card-text
+          //-             | Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare.
+          //-             | Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+          //-             | Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.
       section
         v-parallax(src="/static/images/section.jpeg", height="380")
           v-layout(column, align-center, justify-center)
@@ -110,7 +123,18 @@ export default {
   name: 'landing',
   data () {
     return {
-      title: 'Your Logo'
+      slides: 7,
+      title: 'Your Logo',
+      items: [
+        {src: '/static/images/1.jpeg', text: 'Sample Featured Product 1', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/2.jpeg', text: 'Sample Featured Product 2', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/3.jpeg', text: 'Sample Featured Product 3', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/4.jpeg', text: 'Sample Featured Product 4', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/1.jpeg', text: 'Sample Featured Product 5', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/2.jpeg', text: 'Sample Featured Product 6', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/3.jpeg', text: 'Sample Featured Product 7', description: 'Lorem Ipsum Dolor Cit Amet'},
+        {src: '/static/images/4.jpeg', text: 'Sample Featured Product 8', description: 'Lorem Ipsum Dolor Cit Amet'}
+      ]
     }
   },
 
