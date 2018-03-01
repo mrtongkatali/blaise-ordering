@@ -24,6 +24,7 @@
     "stylus-loader": "^3.0.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
+    "vue2-dropzone": "^3.0.5",
     "vue2-filters": "^0.3.0",
     "vuetify": "^1.0.3",
     "vuex": "^2.3.1",

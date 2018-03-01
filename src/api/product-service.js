@@ -60,5 +60,15 @@ export default {
         reject(err)
       })
     })
+  },
+
+  createProduct: (payload) => {
+    return new Promise((resolve, reject) => {
+      Vue.http.post(`api/product/create`, payload).then((res) => {
+        resolve(res.data.product)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   }
 }
