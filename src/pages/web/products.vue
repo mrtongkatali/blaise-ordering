@@ -75,7 +75,7 @@ v-layout(row, wrap)
             @click.stop="updateSupplier(products.selected)"
           ) Update Product
 
-  v-btn(fab, bottom, right, color="green", dark, fixed, @click.stop="products.show = true")
+  v-btn(fab, bottom, right, color="green", dark, fixed, @click.stop="$router.push({name: 'product-create'})")
     v-icon add
 </template>
 
@@ -101,7 +101,6 @@ export default {
       search: null,
       input: {
         name: null,
-        description: null,
         price: null,
         categories: [],
         supplierId: null
@@ -206,7 +205,7 @@ export default {
 
     async loadSupplierList () {
       try {
-        let list = await ProductService.loadSupplierList()
+        let list = await ProductService.loadSupplierList('active')
         this.productList = filter(list, {status: 'ACTIVE'})
       } catch (e) {
         this.displayToast('An error occured when trying to load your supplier List. Please try again', 'error')

@@ -42,9 +42,9 @@ export default {
     })
   },
 
-  loadCategoryList: () => {
+  loadCategoryList: (status) => {
     return new Promise((resolve, reject) => {
-      Vue.http.get(`api/category/all`).then((res) => {
+      Vue.http.get(`api/category/all?status=${status}`).then((res) => {
         resolve(res.data.categories)
       }).catch((err) => {
         reject(err)
@@ -52,9 +52,9 @@ export default {
     })
   },
 
-  loadSupplierList: () => {
+  loadSupplierList: (status) => {
     return new Promise((resolve, reject) => {
-      Vue.http.get(`api/supplier/all`).then((res) => {
+      Vue.http.get(`api/supplier/all?status=${status}`).then((res) => {
         resolve(res.data.suppliers)
       }).catch((err) => {
         reject(err)

@@ -82,7 +82,6 @@ v-layout(row, wrap)
 <script>
 import moment from 'moment'
 import { ProductService } from '@/api'
-import { filter } from 'lodash/collection'
 
 export default {
   name: 'product-supplier',
@@ -204,8 +203,7 @@ export default {
 
     async loadSupplierList () {
       try {
-        let list = await ProductService.loadSupplierList()
-        this.supplierList = filter(list, {status: 'ACTIVE'})
+        this.supplierList = await ProductService.loadSupplierList('active')
       } catch (e) {
         this.displayToast('An error occured when trying to load your supplier List. Please try again', 'error')
       }

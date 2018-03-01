@@ -69,7 +69,6 @@ v-layout(row, wrap)
 <script>
 import moment from 'moment'
 import { ProductService } from '@/api'
-import { filter } from 'lodash/collection'
 
 export default {
   name: 'product-category',
@@ -193,8 +192,7 @@ export default {
 
     async loadCategoryList () {
       try {
-        let list = await ProductService.loadCategoryList()
-        this.categoryList = filter(list, {status: 'ACTIVE'})
+        this.categoryList = await ProductService.loadCategoryList('active')
       } catch (e) {
         this.displayToast('An error occured when trying to load your category List. Please try again', 'error')
       }

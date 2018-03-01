@@ -159,6 +159,17 @@
                       v-text-field(
                         light,
                         single-line,
+                        prepend-icon="mdi-phone-classic",
+                        v-model="input.companyLandLine",
+                        label="Company Landline",
+                        :rules="[inputRules()['phoneNumber']]",
+                        @keyup.enter.native="registerClient",
+                        required
+                      )
+                    v-flex(xs12)
+                      v-text-field(
+                        light,
+                        single-line,
                         prepend-icon="mdi-email",
                         v-model="input.companyEmail",
                         label="Company Email",
@@ -265,7 +276,7 @@ export default {
       input: {
         firstname: null,
         lastname: null,
-        middlename: null,
+        middlename: '',
         address: null,
         city: null,
         zipCode: null,
