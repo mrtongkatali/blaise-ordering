@@ -19,9 +19,8 @@
         v-layout.my-5(column, wrap, align-center)
           v-flex.my-3(xs12, sm4)
             .text-xs-center
-              h2.headline The best way to start developing
-              span.subheading
-                | Cras facilisis mi vitae nunc
+              h2.headline Featured Products
+
         carousel-3d(:autoplay="true", :autoplay-timeout="3500", :controls-visible="true")
           slide(v-for="(slide, idx) in items", :index="idx", :key="idx")
             figure
@@ -71,10 +70,9 @@
       section
         v-parallax(src="/static/images/section.jpeg", height="380")
           v-layout(column, align-center, justify-center)
-            .headline.white--text.mb-3.text-xs-center Web development has never been easier
-            em Kick-start your application today
-            v-btn.blue.lighten-2.mt-5(dark, large, href="/pre-made-themes")
-              | Get Started
+            .headline.white--text.mb-3.text-xs-center Our Mission
+            p.subheading
+              | Our vision is to be one of the frontrunners in providing solutions to Environmental and Water Analysis needs in the country. By carrying out this vision at every level of our organization, we will be recognized by our employees, customers and manufacturers as the best partner in the country, resulting in value for all.
       section
         v-container(grid-list-xl)
           v-layout.my-5(row, wrap, justify-center)

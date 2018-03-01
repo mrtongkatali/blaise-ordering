@@ -11,7 +11,7 @@
             span
               | {{ props.header.text }}
         template(slot="items", slot-scope="props")
-          tr(@click.stop="selectSupplier(props.item)").pointer
+          tr.pointer
             td {{ props.item.id }}
             td {{ props.item.name }}
             td {{ props.item.address }}
