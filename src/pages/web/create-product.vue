@@ -88,12 +88,14 @@ v-layout(row, wrap)
             v-flex(xs12, md6)
               v-layout(wrap)
                 v-flex(xs12).mt-3
-                  div.ml-3.subheading Upload your product image here
+                  div.ml-3.subheading Upload your product image here. Maximum of 2MB image filesize.
                   vue-dropzone#dropzone.ml-3(
                     ref="imageDropzone",
                     :options="dropzoneOptions",
-                    v-on:vdropzone-success-multiple="onProductImageSuccess",
-                    v-on:vdropzone-sending="uploadProductImage"
+                    v-on:vdropzone-complete="onProductImageSuccess",
+                    v-on:vdropzone-sending="uploadProductImage",
+                    v-on:vdropzone-file-added="countFile",
+                    v-on:vdropzone-error="errorFile"
                   )
 
       v-card-actions.display-flex.justify-end
@@ -121,13 +123,14 @@ export default {
   data () {
     return {
       product: {},
+      totalFilesAdded: 0,
       dropzoneOptions: {
         acceptedFiles: 'image/jpg, image/jpeg',
         autoProcessQueue: false,
         url: process.env.API_SERVER_URL + '/api/product/upload/image',
         thumbnailWidth: 150,
-        maxFilesize: 3,
-        uploadMultiple: true
+        maxFilesize: 2,
+        uploadMultiple: false
       },
       input: {
         name: null,
@@ -153,18 +156,23 @@ export default {
   },
 
   methods: {
+    countFile () {
+      this.totalFilesAdded++
+    },
+
+    errorFile (file, message, xhr) {
+      if (this.totalFilesAdded > 0) this.totalFilesAdded--
+    },
+
     async uploadProductImage (file, xhr, formData) {
-      formData.append('productId', 1)
-      formData.append('productImage', file)
-      console.log(`file`, file)
       if (this.product && this.product.id) {
-        // formData.append('productId', 1)
-        // formData.append('productImage', file.dataURL)
+        formData.append('productId', this.product.id)
+        formData.append('productImage', file)
+        console.log(`file`, file)
       }
     },
 
     async addProducts () {
-      this.$refs.imageDropzone.processQueue()
       if (!this.$refs.createProductForm.validate()) return
       try {
         this.loading.create = true
@@ -174,18 +182,32 @@ export default {
         })
 
         this.product = await ProductService.createProduct(payload)
-        this.$refs.imageDropzone.processQueue()
-        console.log(`this.product`, this.product)
+        if (this.totalFilesAdded > 0) {
+          this.$refs.imageDropzone.processQueue()
+          this.displayToast('Product image uploading. Please wait for awhile..', 'success')
+        } else {
+          this.totalFilesAdded = 0
+          this.loading.create = false
+          this.displayToast('Product has been created.', 'success')
+        }
       } catch (e) {
-        console.log(`e`, e)
         this.loading.create = false
         this.displayToast(this.parseErrorRes(e) || 'An error occur when trying to create order. Please try again', 'error')
       }
     },
 
     onProductImageSuccess (file, response) {
-      this.displayToast('Product has been created.', 'success')
-      this.loading.create = true
+      this.totalFilesAdded--
+      if (this.totalFilesAdded <= 0) {
+        this.displayToast('Product has been created.', 'success')
+        this.product = {}
+        this.loading.create = false
+        this.totalFilesAdded = 0
+
+        setTimeout(() => {
+          this.$router.push({name: 'products'})
+        }, 1500)
+      }
     },
 
     async loadSupplierList () {

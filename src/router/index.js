@@ -70,6 +70,12 @@ export default new Router({
       component: () => import('@/pages/public/registration')
     },
     {
+      path: '/our-products',
+      name: 'our-products',
+      meta: {public: true},
+      component: () => import('@/pages/public/our-products')
+    },
+    {
       path: '/web',
       name: 'web-container',
       component: () => import('@/pages/container/web-container'),

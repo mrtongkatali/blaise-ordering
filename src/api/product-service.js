@@ -62,6 +62,16 @@ export default {
     })
   },
 
+  loadProductList: (status) => {
+    return new Promise((resolve, reject) => {
+      Vue.http.get(`api/product/all?status=${status}`).then((res) => {
+        resolve(res.data.products)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  },
+
   createProduct: (payload) => {
     return new Promise((resolve, reject) => {
       Vue.http.post(`api/product/create`, payload).then((res) => {
