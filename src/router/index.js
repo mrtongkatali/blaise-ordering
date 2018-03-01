@@ -116,6 +116,16 @@ export default new Router({
           beforeEnter: requiresAuth
         }
       ]
+    },
+    {
+      path: '/page-not-found',
+      name: 'page-not-found',
+      component: () => import('@/pages/web/page-not-found'),
+      meta: {public: true}
+    },
+    {
+      path: '*',
+      redirect: '/page-not-found'
     }
   ]
 })

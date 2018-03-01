@@ -1,7 +1,7 @@
 let data = {
   menuItems: [
     { icon: 'mdi-view-dashboard', text: 'Dashboard', routeName: 'dashboard' },
-    { icon: 'mdi-account-multiple-outline', text: 'Client Management', routeName: 'client-management' },
+    { icon: 'mdi-account-multiple-outline', text: 'Client Management' },
     {
       icon: 'keyboard_arrow_up',
       'icon-alt': 'keyboard_arrow_down',
