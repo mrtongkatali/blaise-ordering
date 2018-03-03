@@ -34,7 +34,7 @@ export default {
     showToast (options) {
       let color = 'primary'
 
-      if (options.mode === 'success') color = 'green'
+      if (options.mode === 'success') color = 'black'
       if (options.mode === 'error') color = 'red'
 
       this.snackBar.show = true

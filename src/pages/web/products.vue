@@ -18,16 +18,14 @@
             td {{ props.item.specification }}
             td.text-xs-left {{ props.item.supplier.name }}
             td.text-xs-left {{ props.item.status }}
-            //- td.text-xs-left {{ dateFormat(props.item.created_at) }}
             td.text-xs-left
-              v-btn( light, small, color="red", @click.native.stop="deleteSupplier(props.item)").white--text Delete
+              v-btn( light, small, color="red", @click.native.stop="deleteProduct(props.item)").white--text Delete
 
     v-btn(fab, bottom, right, color="green", dark, fixed, @click.stop="$router.push({name: 'product-create'})")
       v-icon add
 </template>
 
 <script>
-import moment from 'moment'
 import { ProductService } from '@/api'
 
 export default {
@@ -63,25 +61,13 @@ export default {
   },
 
   methods: {
-    dateFormat (datetime) {
-      return (datetime ? moment(datetime).format(this.timeformat()) : '')
-    },
-
-    async createSupplier () {
-      this.loading.create = false
-      if (!this.$refs.createProductForm.validate()) return
-
+    async deleteProduct (product) {
       try {
-        this.loading.create = true
-        await ProductService.createSupplier(this.input)
-
-        this.loadSupplierList()
-        this.displayToast('Successfully added new supplier', 'success')
-        this.products.show = false
-        this.loading.create = false
+        await ProductService.updateProductStatus(product.id, 'INACTIVE')
+        this.displayToast('Product has been deleted', 'success')
+        this.loadProductList()
       } catch (e) {
-        this.loading.create = false
-        this.displayToast(this.parseErrorRes(e) || 'An error occured. Please try again', 'error')
+        this.displayToast(this.parseErrorRes(e) || 'An error occured when trying to delete product. Please try again', 'error')
       }
     },
 
