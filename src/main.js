@@ -7,6 +7,7 @@ import store from './store'
 import axios from 'axios'
 import Vuetify from 'vuetify'
 import Carousel3d from 'vue-carousel-3d'
+import VueLazyLoad from 'vue-lazyload'
 import 'babel-polyfill'
 
 import { EventBus } from '@/utils/event-bus'
@@ -19,6 +20,16 @@ import '@/assets/main.styl'
 Vue.use(Vuetify)
 Vue.use(store)
 Vue.use(Carousel3d)
+Vue.use(VueLazyLoad, {
+  // set observer to true
+  observer: true,
+  // optional
+  observerOptions: {
+    rootMargin: '0px',
+    threshold: 0.1
+  }
+})
+
 Vue.config.productionTip = false
 
 let http = axios.create({
@@ -57,6 +68,15 @@ let globalMixins = {
           return value.length > 0 || 'You must select atleast 1'
         }
       }
+    },
+
+    constructImageUrl (image) {
+      console.log(image)
+      if (image && image.imagePath && image.filename && image.extension) {
+        return image.imagePath + image.filename + '.' + image.extension
+      }
+
+      return null
     },
 
     timeformat () {

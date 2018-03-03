@@ -100,5 +100,15 @@ export default {
         reject(err)
       })
     })
+  },
+
+  deleteProductImage: (productId, imageId) => {
+    return new Promise((resolve, reject) => {
+      Vue.http.get(`api/product/delete/image/${productId}?imageId=${imageId}`).then((res) => {
+        resolve(res.data.categories)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
   }
 }
