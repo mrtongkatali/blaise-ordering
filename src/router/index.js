@@ -102,6 +102,13 @@ export default new Router({
           beforeEnter: requiresAuth
         },
         {
+          path: '/products/:productId/view',
+          name: 'product-view',
+          meta: {auth: ['ADMIN'], title: 'Products > View'},
+          component: () => import('@/pages/web/product-view'),
+          beforeEnter: requiresAuth
+        },
+        {
           path: '/product/supplier',
           name: 'product-supplier',
           meta: {auth: ['ADMIN'], title: 'Product Supplier'},

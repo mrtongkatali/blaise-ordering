@@ -2,7 +2,7 @@
 v-layout(row, wrap)
   v-flex(xs12)
     v-card
-      v-card-title.title Add New Product
+      v-card-title.title Product View :: {{ product.name }}
       v-card-text
         v-form(ref="createProductForm")
           v-layout(row)
@@ -17,6 +17,7 @@ v-layout(row, wrap)
                     label="Supplier",
                     v-model="supplier.selected",
                     item-text="name",
+                    item-value="id",
                     :items="supplier.list",
                     :rules="[inputRules()['required']]"
                   )
@@ -41,7 +42,7 @@ v-layout(row, wrap)
                     v-model="input.name",
                     label="Product Name",
                     :rules="[inputRules()['required']]",
-                    @keyup.enter.native="addProducts",
+                    @keyup.enter.native="updateProduct",
                     required
                   )
                 v-flex(xs12)
@@ -51,7 +52,7 @@ v-layout(row, wrap)
                     v-model="input.brand",
                     label="Brand",
                     :rules="[inputRules()['required']]",
-                    @keyup.enter.native="addProducts",
+                    @keyup.enter.native="updateProduct",
                     required
                   )
                 v-flex(xs12)
@@ -61,7 +62,7 @@ v-layout(row, wrap)
                     v-model="input.specification",
                     label="Specification",
                     :rules="[inputRules()['required']]",
-                    @keyup.enter.native="addProducts",
+                    @keyup.enter.native="updateProduct",
                     required
                   )
                 v-flex(xs12)
@@ -70,17 +71,18 @@ v-layout(row, wrap)
                     prepend-icon="mdi-note-outline",
                     v-model="input.description",
                     label="Description",
-                    @keyup.enter.native="addProducts"
+                    @keyup.enter.native="updateProduct"
                   )
                 v-flex(xs12)
                   v-text-field(
                     light,
+                    required,
                     prepend-icon="mdi-currency-usd",
                     v-model="input.price",
                     label="Price",
+                    @keyup.enter.native="updateProduct",
                     :rules="[inputRules()['money']]",
-                    @keyup.enter.native="addProducts",
-                    required
+                    :suffix="(supplier && supplier.selected && supplier.selected.currency ? supplier.selected.currency : '')"
                   )
                 v-flex(xs12).mt-2
                   v-switch(label="Featured Product?", v-model="input.isFeatured")
@@ -98,13 +100,13 @@ v-layout(row, wrap)
                   )
 
       v-card-actions.display-flex.justify-end
-        v-btn(color="red", flat, @click.stop="$route.push({name: 'products'})", :disabled="loading.create") Cancel
+        v-btn(color="red", flat, @click.stop="$route.push({name: 'products'})", :disabled="loading.create") Back to Product Listing
         v-btn(
           medium,
           color="primary",
           :loading="loading.create",
-          @click.stop="addProducts"
-        ) Add Product
+          @click.stop="updateProduct"
+        ) Update Product
 </template>
 
 <script>
@@ -112,13 +114,13 @@ v-layout(row, wrap)
 import moment from 'moment'
 import { mapGetters } from 'vuex'
 import { ProductService } from '@/api'
-import { filter } from 'lodash/collection'
+import { filter, map } from 'lodash/collection'
 import { merge } from 'lodash/object'
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.css'
 
 export default {
-  name: 'create-products',
+  name: 'product-view',
   data () {
     return {
       product: {},
@@ -146,7 +148,7 @@ export default {
       },
       category: {
         list: [],
-        selected: null
+        selected: []
       },
       loading: {
         create: false
@@ -155,6 +157,26 @@ export default {
   },
 
   methods: {
+    async getProductById () {
+      try {
+        this.product = await ProductService.getProductById(this.$route.params.productId)
+        this.input = {
+          name: this.product.name,
+          brand: this.product.brand,
+          specification: this.product.specification,
+          description: this.product.description,
+          isFeatured: this.product.isFeatured,
+          price: this.product.price
+        }
+
+        this.supplier.selected = this.product.supplier
+        this.category.selected = map(this.product.categories, 'id')
+      } catch (e) {
+        this.displayToast(this.parseErrorRes(e) || `An error occured when trying to get product. Please try again.`, 'error')
+        this.$router.push({name: 'products'})
+      }
+    },
+
     countFile () {
       this.totalFilesAdded++
     },
@@ -171,16 +193,17 @@ export default {
       }
     },
 
-    async addProducts () {
+    async updateProduct () {
       if (!this.$refs.createProductForm.validate()) return
       try {
         this.loading.create = true
         let payload = merge(this.input, {
           categories: this.category.selected,
-          supplierId: this.supplier.selected.id
+          supplierId: this.supplier.selected.id,
+          prodId: this.product.id
         })
 
-        this.product = await ProductService.createProduct(payload)
+        this.product = await ProductService.updateProduct(payload)
         if (this.totalFilesAdded > 0) {
           this.$refs.imageDropzone.processQueue()
           this.displayToast('Product image uploading. Please wait for awhile..', 'success')
@@ -198,14 +221,12 @@ export default {
     onProductImageSuccess (file, response) {
       this.totalFilesAdded--
       if (this.totalFilesAdded <= 0) {
-        this.displayToast('Product has been created.', 'success')
+        this.displayToast('Product has been updated.', 'success')
         this.product = {}
         this.loading.create = false
         this.totalFilesAdded = 0
 
-        setTimeout(() => {
-          this.$router.push({name: 'products'})
-        }, 1500)
+        this.$refs.imageDropzone.removeAllFiles()
       }
     },
 
@@ -241,6 +262,7 @@ export default {
   },
 
   created () {
+    this.getProductById()
     this.loadSupplierList()
     this.loadCategoryList()
   }

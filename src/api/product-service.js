@@ -62,6 +62,16 @@ export default {
     })
   },
 
+  getProductById: (productId) => {
+    return new Promise((resolve, reject) => {
+      Vue.http.get(`api/product/${productId}`).then((res) => {
+        resolve(res.data.product)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  },
+
   loadProductList: (status) => {
     return new Promise((resolve, reject) => {
       Vue.http.get(`api/product/all?status=${status}`).then((res) => {
@@ -75,6 +85,16 @@ export default {
   createProduct: (payload) => {
     return new Promise((resolve, reject) => {
       Vue.http.post(`api/product/create`, payload).then((res) => {
+        resolve(res.data.product)
+      }).catch((err) => {
+        reject(err)
+      })
+    })
+  },
+
+  updateProduct: (payload) => {
+    return new Promise((resolve, reject) => {
+      Vue.http.post(`api/product/update`, payload).then((res) => {
         resolve(res.data.product)
       }).catch((err) => {
         reject(err)

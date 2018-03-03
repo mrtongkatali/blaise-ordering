@@ -11,13 +11,14 @@
             span
               | {{ props.header.text }}
         template(slot="items", slot-scope="props")
-          tr.pointer
+          tr(@click="$router.push({name: 'product-view', params: {productId: props.item.id}})").pointer
             td {{ props.item.id }}
             td {{ props.item.name }}
-            td {{ props.item.address }}
-            td {{ props.item.currency }}
+            td {{ props.item.brand }}
+            td {{ props.item.specification }}
+            td.text-xs-left {{ props.item.supplier.name }}
             td.text-xs-left {{ props.item.status }}
-            td.text-xs-left {{ dateFormat(props.item.created_at) }}
+            //- td.text-xs-left {{ dateFormat(props.item.created_at) }}
             td.text-xs-left
               v-btn( light, small, color="red", @click.native.stop="deleteSupplier(props.item)").white--text Delete
 
@@ -36,11 +37,11 @@ export default {
       rowPerPageItems: [15, 25, 50, {'text': 'All', 'value': -1}],
       headers: [
         {text: 'ID', align: 'left', sortable: true, value: 'id'},
-        {text: 'Supplier Name', align: 'left', sortable: true, value: 'name'},
-        {text: 'Address', align: 'left', value: 'address'},
-        {text: 'Currency', align: 'left', value: 'currency'},
+        {text: 'Product Name', align: 'left', sortable: true, value: 'name'},
+        {text: 'Brand', align: 'left', value: 'brand'},
+        {text: 'Specification', align: 'left', value: 'specification'},
+        {text: 'Supplier', align: 'left', value: 'supplier.name'},
         {text: 'Status', align: 'left', value: 'status'},
-        {text: 'Created', align: 'left', value: 'created_at'},
         {text: 'Actions', align: 'left', value: 'id'}
       ],
       search: null,
